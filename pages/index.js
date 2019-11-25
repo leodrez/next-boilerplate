@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-
 import Head from "next/head";
 import Link from "next/link";
 
-import loadDB from "../lib/load-firebase";
+import getCollection from '../firebase/queries/getCollection'
 
 export const config = { amp: true };
 
-function Index({ data }) {
+function Index({ projects, products }) {
   return (
     <div>
       <div>
@@ -16,9 +14,26 @@ function Index({ data }) {
         </Head>
       </div>
       <h1>Products</h1>
+      <Link href="/products"><a>Products</a></Link>
+      <br/>
+      <Link href="/projects"><a>Projects</a></Link>
+      <p>//</p>
+      <h3>Projects</h3>
       <div>
-        {data.map(p => (
+        {projects.map(p => (
           <Link href={{ pathname: `/project/${p.id}` }}>
+            <a>
+              {p.name}
+              <br />
+            </a>
+          </Link>
+        ))}
+      </div>
+      <p>//</p>
+      <h3>Products</h3>
+      <div>
+        {products.map(p => (
+          <Link href={{ pathname: `/product/${p.id}` }}>
             <a>
               {p.name}
               <br />
@@ -36,34 +51,9 @@ function Index({ data }) {
 }
 
 Index.getInitialProps = async function() {
-  const db = await loadDB();
-  let products = [];
-  let id = [];
-
-  let data = [];
-
-  // ref = querySnapshot
-  const ref = await db.collection("products").get();
-
-  ref.forEach(doc => {
-    if (!doc.exists) {
-      console.log("No such document!");
-    }
-    id.push(doc.id);
-    products.push(doc.data());
-  });
-
-  function consolidateData() {
-    let i = 0;
-    products.map(z => {
-      data.push({ id: id[i], ...z });
-      i++;
-    });
-  }
-
-  await consolidateData();
-
-  return { data };
+  const projects = await getCollection('projects')
+  const products = await getCollection('products')
+  return { projects, products };
 };
 
 export default Index;

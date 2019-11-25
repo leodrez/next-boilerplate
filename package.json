@@ -1,7 +1,7 @@
 {
-  "name": "next-boilerplate",
+  "name": "uniqorns-web-experience",
   "version": "1.0.0",
-  "description": "Next js, firebase and env variables boilerplate",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "next",
